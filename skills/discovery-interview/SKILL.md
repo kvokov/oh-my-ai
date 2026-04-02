@@ -18,14 +18,7 @@ Use AskUserQuestion to understand the shape of the idea:
 - Who will use this?
 - New thing or improving something existing?
 
-Determine PROJECT TYPE from answers:
-- **Backend service/API** → Focus: data, scaling, integrations
-- **Frontend/Web app** → Focus: UX, state, responsiveness
-- **CLI tool** → Focus: ergonomics, composability, output formats
-- **Mobile app** → Focus: offline, platform, permissions
-- **Full-stack app** → Focus: all of the above
-- **Script/Automation** → Focus: triggers, reliability, idempotency
-- **Library/SDK** → Focus: API design, docs, versioning
+Determine **project type** from answers (guides which categories matter most): Backend/API · Web · CLI · Mobile · Full-stack · Script/automation · Library/SDK.
 
 ### Phase 2: Category Deep Dive
 
@@ -43,35 +36,35 @@ When you detect uncertainty or knowledge gaps, offer to research:
 
 ```
 AskUserQuestion(
-  question: "You mentioned [X]. There are several approaches with different tradeoffs. Want me to research this?",
+  question: "[X] has several viable approaches with different tradeoffs. Research?",
   options: [
-    {label: "Yes, research it", description: "I'll investigate options and explain tradeoffs"},
-    {label: "No, I know what I want", description: "Skip research"},
-    {label: "Tell me briefly", description: "Quick overview without deep research"}
+    {label: "Yes, research", description: "Compare options and tradeoffs"},
+    {label: "No", description: "I know what I want"},
+    {label: "Brief only", description: "Short overview, no deep dive"}
   ]
 )
 ```
 
-If user wants research: use WebSearch/WebFetch or spawn an agent, then return with informed follow-up questions.
+If yes: WebSearch/WebFetch or an agent, then follow up with informed questions.
 
 ### Phase 4: Conflict Resolution
 
-When you discover conflicting requirements, surface them explicitly via AskUserQuestion with options to prioritize one side, the other, or explore alternatives.
+Surface conflicting requirements with AskUserQuestion: favor one constraint, the other, or explore alternatives first.
 
-Example (real-time vs. cost — realistic conflict):
+Example (latency vs. cost):
 
 ```
 AskUserQuestion(
-  question: "I noticed a tension: you want sub-second dashboard updates for all users, but also want to stay on the smallest cloud tier to control cost. Near real-time fan-out usually needs more infra than a single small instance. What should we optimize for first?",
+  question: "Tension: sub-second dashboard updates for everyone vs. smallest cloud tier. Real-time fan-out usually needs more than one small instance. Optimize for what first?",
   options: [
-    {label: "Prioritize freshness", description: "Accept higher infra cost or fewer concurrent users for true near-real-time"},
-    {label: "Prioritize cost", description: "Accept slower refresh (e.g. polling or batched updates) to stay on minimal resources"},
-    {label: "Explore alternatives", description: "Research hybrid approaches (e.g. SSE + caching) before deciding"}
+    {label: "Freshness", description: "Higher cost or fewer concurrent users for near-real-time"},
+    {label: "Cost", description: "Slower refresh (polling/batch) on minimal infra"},
+    {label: "Explore alternatives", description: "e.g. SSE + caching — research before choosing"}
   ]
 )
 ```
 
-Common conflicts: simple vs. feature-rich, real-time vs. cheap infrastructure, highly secure vs. frictionless UX, flexible vs. performant, fast to build vs. future-proof.
+Typical tensions: simple vs. rich features; real-time vs. cheap infra; secure vs. frictionless UX; flexible vs. fast; ship fast vs. future-proof.
 
 ### Phase 5: Completeness Check
 
@@ -85,9 +78,9 @@ Before writing the spec, verify you have:
 
 **Decisions:** All tradeoffs explicitly chosen, no TBD items, user confirmed understanding.
 
-If anything is missing, go back and ask more questions.
+If anything is missing, ask more; do not write the spec yet.
 
-**Completeness failure example (loop-back):** You have a clear problem statement and happy-path journey, but **scale** is still vague ("a lot of users") and **security** is unstated. Do not generate the spec. Say briefly what is missing, then return to the relevant categories (e.g. Phase 2 deep dive on scale and auth) with targeted AskUserQuestion rounds. After new answers, **re-run this Phase 5 checklist** until it passes.
+**Loop-back:** e.g. problem and happy path are clear but scale is vague or security is unstated → name the gap, run targeted Phase 2 questions, then **re-run this checklist**.
 
 ### Phase 6: Spec Generation
 
