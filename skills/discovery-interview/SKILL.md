@@ -58,6 +58,19 @@ If user wants research: use WebSearch/WebFetch or spawn an agent, then return wi
 
 When you discover conflicting requirements, surface them explicitly via AskUserQuestion with options to prioritize one side, the other, or explore alternatives.
 
+Example (real-time vs. cost — realistic conflict):
+
+```
+AskUserQuestion(
+  question: "I noticed a tension: you want sub-second dashboard updates for all users, but also want to stay on the smallest cloud tier to control cost. Near real-time fan-out usually needs more infra than a single small instance. What should we optimize for first?",
+  options: [
+    {label: "Prioritize freshness", description: "Accept higher infra cost or fewer concurrent users for true near-real-time"},
+    {label: "Prioritize cost", description: "Accept slower refresh (e.g. polling or batched updates) to stay on minimal resources"},
+    {label: "Explore alternatives", description: "Research hybrid approaches (e.g. SSE + caching) before deciding"}
+  ]
+)
+```
+
 Common conflicts: simple vs. feature-rich, real-time vs. cheap infrastructure, highly secure vs. frictionless UX, flexible vs. performant, fast to build vs. future-proof.
 
 ### Phase 5: Completeness Check
@@ -73,6 +86,8 @@ Before writing the spec, verify you have:
 **Decisions:** All tradeoffs explicitly chosen, no TBD items, user confirmed understanding.
 
 If anything is missing, go back and ask more questions.
+
+**Completeness failure example (loop-back):** You have a clear problem statement and happy-path journey, but **scale** is still vague ("a lot of users") and **security** is unstated. Do not generate the spec. Say briefly what is missing, then return to the relevant categories (e.g. Phase 2 deep dive on scale and auth) with targeted AskUserQuestion rounds. After new answers, **re-run this Phase 5 checklist** until it passes.
 
 ### Phase 6: Spec Generation
 
