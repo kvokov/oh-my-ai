@@ -22,7 +22,7 @@ Determine **project type** from answers (guides which categories matter most): B
 
 ### Phase 2: Category Deep Dive
 
-Work through relevant categories from CATEGORIES.md. For each:
+Work through relevant categories from [CATEGORIES.md](./CATEGORIES.md). For each:
 1. Ask 2-4 questions using AskUserQuestion
 2. Detect uncertainty — if user seems unsure, offer research
 3. Educate when needed — don't let them make uninformed decisions
@@ -85,7 +85,7 @@ If anything is missing, ask more; do not write the spec yet.
 ### Phase 6: Spec Generation
 
 1. **Summarize understanding** and ask user to confirm before writing.
-2. **Generate the spec** to `docs/specs/YYYY-MM-DD-<name>.md` using the template in SPEC_TEMPLATE.md.
+2. **Generate the spec** to `docs/specs/YYYY-MM-DD-<name>.md` using the template in [SPEC_TEMPLATE.md](SPEC_TEMPLATE.md).
 
 ### Phase 7: Implementation Handoff
 
