@@ -1,0 +1,81 @@
+{
+  "context": "Tests whether the agent correctly identifies this as a CLI project type and selects appropriate categories, conducts a thorough interview, and completes the full workflow through Phase 7 (Implementation Handoff) by producing handoff notes capturing next steps.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "CLI project type identified",
+      "max_score": 8,
+      "description": "interview_log.md or the spec explicitly identifies the project type as CLI (command-line interface) or similar — not as a web app, mobile app, or backend API."
+    },
+    {
+      "name": "Handoff notes created",
+      "max_score": 8,
+      "description": "A `handoff_notes.md` file exists in the workspace."
+    },
+    {
+      "name": "Handoff captures next step choice",
+      "max_score": 10,
+      "description": "handoff_notes.md explicitly states one of: start implementation now, plan implementation first, or review spec / done for now — reflecting what was agreed after the spec was generated."
+    },
+    {
+      "name": "CLI UX explored",
+      "max_score": 8,
+      "description": "interview_log.md contains at least 2 questions about the command-line interface design — e.g. argument structure, output format options, interactive vs. non-interactive mode, piping to other tools."
+    },
+    {
+      "name": "S3 access/auth addressed",
+      "max_score": 8,
+      "description": "interview_log.md contains at least 1 question about how the CLI will authenticate to S3 — e.g. IAM roles, AWS profiles, credential management, access scoping."
+    },
+    {
+      "name": "Malformed data edge case addressed",
+      "max_score": 6,
+      "description": "interview_log.md contains at least 1 question about what happens with malformed or unexpected log entries."
+    },
+    {
+      "name": "Performance requirements explored",
+      "max_score": 6,
+      "description": "interview_log.md contains at least 1 question about performance expectations — e.g. acceptable response time when scanning large log files, streaming vs. loading all data."
+    },
+    {
+      "name": "Language/tech decision addressed",
+      "max_score": 8,
+      "description": "interview_log.md addresses the 'haven't decided on a language yet' gap — either by asking about constraints, team preferences, or offering to research language options for CLI tools."
+    },
+    {
+      "name": "Deployment/distribution addressed",
+      "max_score": 6,
+      "description": "interview_log.md contains at least 1 question about how the CLI will be distributed and installed — e.g. binary distribution, package manager, Docker wrapper."
+    },
+    {
+      "name": "Spec saved to correct path",
+      "max_score": 6,
+      "description": "The spec file is saved in the `docs/specs/` directory with a YYYY-MM-DD date prefix in the filename."
+    },
+    {
+      "name": "Minimum 10 questions asked",
+      "max_score": 6,
+      "description": "interview_log.md contains at least 10 distinct questions."
+    },
+    {
+      "name": "Summary before spec",
+      "max_score": 6,
+      "description": "interview_log.md contains a summary of gathered requirements that appears before the spec is written."
+    },
+    {
+      "name": "Spec has P0/P1/P2 structure",
+      "max_score": 6,
+      "description": "The spec's Functional Requirements section uses at least two of: Must Have (P0), Should Have (P1), Nice to Have (P2)."
+    },
+    {
+      "name": "Out of Scope section present",
+      "max_score": 4,
+      "description": "The spec contains an Out of Scope section."
+    },
+    {
+      "name": "Completeness check evidenced",
+      "max_score": 4,
+      "description": "interview_log.md or spec contains a note indicating a completeness check was performed before the spec was written."
+    }
+  ]
+}

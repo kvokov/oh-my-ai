@@ -1,0 +1,81 @@
+{
+  "context": "Tests whether the agent detects technology choices made without understanding tradeoffs (GraphQL, collaborative filtering), triggers research on those topics, surfaces the latency-vs-personalization conflict, and performs a proper completeness loop-back when gaps are detected before writing the spec.",
+  "type": "weighted_checklist",
+  "checklist": [
+    {
+      "name": "GraphQL tradeoff explored",
+      "max_score": 8,
+      "description": "research_notes.md or interview_log.md questions or researches whether GraphQL is the right fit for a recommendations API — comparing it to REST or other approaches for this use case."
+    },
+    {
+      "name": "Collaborative filtering limitations addressed",
+      "max_score": 8,
+      "description": "research_notes.md or interview_log.md addresses the cold-start problem or scale implications of collaborative filtering — or compares it to alternatives."
+    },
+    {
+      "name": "Research notes file created",
+      "max_score": 6,
+      "description": "A `research_notes.md` file exists in the workspace."
+    },
+    {
+      "name": "At least 2 options compared in research",
+      "max_score": 8,
+      "description": "research_notes.md compares at least 2 distinct recommendation approaches or API technology options (e.g. any two of: collaborative filtering, content-based filtering, hybrid, GraphQL, REST, gRPC)."
+    },
+    {
+      "name": "Latency-personalization conflict surfaced",
+      "max_score": 8,
+      "description": "interview_log.md or research_notes.md explicitly names the tension between recommendation freshness/personalization and page load performance or infrastructure cost."
+    },
+    {
+      "name": "Conflict resolution stated in spec",
+      "max_score": 8,
+      "description": "The spec explicitly states how the latency-vs-personalization tension was resolved — which constraint was prioritized and why."
+    },
+    {
+      "name": "Security gap probed",
+      "max_score": 8,
+      "description": "interview_log.md contains at least 1 question probing what 'security is handled' means in the context of personalized recommendations — e.g. whether users can see each other's data, privacy implications of tracking purchase history, GDPR/CCPA considerations."
+    },
+    {
+      "name": "Scale requirements clarified",
+      "max_score": 6,
+      "description": "interview_log.md contains at least 1 question clarifying what '50,000 active users and growing' means for the recommendations system — e.g. requests per second, peak load, caching strategy."
+    },
+    {
+      "name": "Completeness loop-back evidenced",
+      "max_score": 8,
+      "description": "interview_log.md explicitly notes at least 1 instance where a gap was identified after initial questioning and additional targeted questions were asked before finalizing the interview (a loop-back)."
+    },
+    {
+      "name": "Minimum 10 questions asked",
+      "max_score": 6,
+      "description": "interview_log.md contains at least 10 distinct questions."
+    },
+    {
+      "name": "Spec saved to correct path",
+      "max_score": 6,
+      "description": "The spec file is saved in the `docs/specs/` directory with a YYYY-MM-DD date prefix in the filename."
+    },
+    {
+      "name": "Research appendix in spec",
+      "max_score": 6,
+      "description": "The spec contains an `Appendix: Research Findings` (or similarly named) section summarizing the technology research."
+    },
+    {
+      "name": "Technical Architecture reflects research",
+      "max_score": 6,
+      "description": "The spec's Technical Architecture section references the chosen recommendation approach from the research."
+    },
+    {
+      "name": "Spec has P0/P1/P2 structure",
+      "max_score": 4,
+      "description": "The spec's Functional Requirements section uses at least two of: Must Have (P0), Should Have (P1), Nice to Have (P2)."
+    },
+    {
+      "name": "Out of Scope section present",
+      "max_score": 4,
+      "description": "The spec contains an Out of Scope section."
+    }
+  ]
+}
