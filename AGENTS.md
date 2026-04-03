@@ -1,32 +1,18 @@
 # Agent instructions — Oh My Skills
 
-This repository holds **agent skills**: reusable instruction sets for AI-assisted development. Treat skills as the product; keep them focused, accurate, and easy for an agent to follow end-to-end.
+Non-discoverable constraints: things that are easy to miss if you only read `README.md` or a single skill without checking layout, lockfiles, or CI together.
 
-## Layout
+## `skills/` vs `.agents/skills/`
 
+- `**skills/<name>/**`: First-party tiles published from this repo (`README.md` table + Tessl on `main` when the tile is registered in CI).
+- `**.agents/skills/**`: Vendored copies pinned in `skills-lock.json` at the repo root. Used for editor/agent workflows here; not the same set as `skills/`. Nothing under `.agents/skills/` is published by this repo’s workflow unless you also ship a matching tile under `skills/` and wire CI.
 
-| Path                                   | Purpose                                                                             |
-| -------------------------------------- | ----------------------------------------------------------------------------------- |
-| `skills/<skill-name>/`                 | One skill per directory. Primary entry is `SKILL.md`.                               |
-| `skills/<skill-name>/` (support files) | Optional: templates, category lists, assets referenced from `SKILL.md`.             |
-| `README.md`                            | Human-facing index of available skills — update it when adding or renaming a skill. |
+## Adding a first-party skill under `skills/`
 
+1. Add a row to the table in `README.md`.
+2. Create `skills/<skill-name>/` with `SKILL.md` and `**tile.json**` (Tessl’s working directory per job is the tile path; lint/publish expect that package layout). Use `skills/discovery-interview/` as the reference for frontmatter, tone, and `tile.json` shape.
+3. Append `skills/<skill-name>` to `matrix.tile` in `.github/workflows/tessl-publish.yml`. Without that entry, pushes to `main` do not run `tessl tile lint` / `tessl tile publish` for the new tile.
 
-## Skill format (`SKILL.md`)
+## Editing skills
 
-- Start with YAML frontmatter:
-  - `name`: short identifier (usually matches the directory name).
-  - `description`: when to use the skill and what it does; include trigger phrases so routing is reliable.
-- Body: clear steps, phases, or sections. Prefer explicit “do / don’t” and ordering over vague prose.
-- Link or reference companion files (e.g. `CATEGORIES.md`, `SPEC_TEMPLATE.md`) instead of duplicating large templates inline.
-
-## When editing or adding skills
-
-- **Scope**: Change only what the task requires; do not refactor unrelated skills or repo-wide structure unless asked.
-- **Consistency**: Match the tone, structure, and frontmatter style of existing skills (see `skills/discovery-interview/SKILL.md`).
-- **Discoverability**: If you add a new top-level skill, add a row to the table in `README.md`.
-- **Accuracy**: If a skill references tools (e.g. `AskUserQuestion`, web search), keep names and behavior aligned with how this workspace’s agents actually run.
-
-## License
-
-Project license is in `LICENSE` (MIT).
+Match existing skills’ structure and frontmatter. If a skill references tools (e.g. `AskUserQuestion`), keep names aligned with how agents in this workspace actually run.

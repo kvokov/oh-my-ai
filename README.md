@@ -1,12 +1,12 @@
 # Oh My Skills
 
-Skills for AI-assisted development.
+First-party [Tessl](https://docs.tessl.io) skill tiles for AI-assisted development: packaged prompts and workflows agents can load to do structured work (interviews, specs, and similar tasks).
 
 ## Available Skills
 
 | Skill | Description |
 |-------|-------------|
-| `discovery-interview` | Deep interview process that turns vague ideas into detailed specs: guided Q&A, research when needed, and a structured spec with stories, acceptance criteria, and constraints. |
+| [`discovery-interview`](skills/discovery-interview/) | Guided discovery interview that turns vague ideas into a structured spec: targeted Q&A, research when needed, user stories, acceptance criteria, and constraints. |
 
 ## License
 

@@ -1,8 +1,8 @@
 {
   "name": "oh-my-ai/discovery-interview",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "private": false,
-  "summary": "Conduct an interactive discovery interview to produce a structured product specification. Use when the user wants to: write a spec, define requirements, create a PRD, flesh out an idea, brainstorm a feature, plan a new project, write a feature spec, define product requirements, or scope a technical project. Asks targeted clarifying questions through AskUserQuestion, identifies knowledge gaps and edge cases, researches tradeoffs when uncertainty exists, and outputs a structured specification document with user stories, acceptance criteria, technical constraints, and prioritized requirements. Do NOT use for implementation, code review, debugging, or tasks where the user already has a complete spec.",
+  "summary": "Interactive discovery interview → structured product spec. Triggers: spec, PRD, requirements, scoping, brainstorming, new project. Uses AskUserQuestion; WebSearch/WebFetch when user wants research. Outputs user stories, acceptance criteria, constraints.",
   "skills": {
     "discovery-interview": {
       "path": "SKILL.md"

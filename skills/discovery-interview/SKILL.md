@@ -1,42 +1,52 @@
 ---
 name: discovery-interview
-description: "Conduct an interactive discovery interview to produce a structured product specification. Use when the user wants to: write a spec, define requirements, create a PRD, flesh out an idea, brainstorm a feature, plan a new project, write a feature spec, define product requirements, or scope a technical project. Asks targeted clarifying questions through AskUserQuestion, identifies knowledge gaps and edge cases, researches tradeoffs when uncertainty exists, and outputs a structured specification document with user stories, acceptance criteria, technical constraints, and prioritized requirements. Do NOT use for implementation, code review, debugging, or tasks where the user already has a complete spec."
+description: "Conduct an interactive discovery interview to produce a structured product specification. Triggers: write a spec, PRD, feature spec, requirements, product requirements, scope a project, brainstorm a feature, flesh out an idea, plan a new project. Uses AskUserQuestion for all user choices; WebSearch/WebFetch when the user wants research. Outputs: user stories, acceptance criteria, technical constraints, prioritized requirements in docs/specs/ per SPEC_TEMPLATE.md. Do NOT use for: implementation, code review, debugging, refactors, or when the user already has a complete spec they only want edited."
 ---
 
 # Discovery Interview
 
-Transform vague ideas into detailed, implementable specifications through iterative Q&A.
+Turn vague ideas into an implementable spec through ordered phases and targeted questions.
 
-## Process Overview
+## Non-negotiables (do not skip)
 
-7 phases, executed in order. Do not skip phases. Minimum 10-15 questions across categories for any real project.
+1. **Run all 7 phases in order** below. Do not jump to the spec early.
+2. **Minimum 10–15 questions** across categories for any real project. **Never** treat 3–5 questions as enough.
+3. **Every** AskUserQuestion must include an option for uncertainty (e.g. “I’m not sure” / “Research this”).
+4. **At least one research loop** for any non-trivial project (user accepts research → WebSearch/WebFetch or agent, then follow-up questions).
+5. **Completeness check (Phase 5) must pass** before writing the spec. If anything is missing, ask more; do not write the spec yet.
+6. **Summarize your understanding** and get user confirmation **before** generating the spec file.
+7. **Write the spec** to `docs/specs/YYYY-MM-DD-<name>.md` using [SPEC_TEMPLATE.md](./SPEC_TEMPLATE.md). Create `docs/specs/` if it does not exist.
 
-### Phase 1: Initial Orientation (2-3 questions max)
+## Process overview
 
-Use AskUserQuestion to understand the shape of the idea:
-- What problem are you trying to solve?
+Seven phases, in order.
+
+### Phase 1: Initial orientation (2–3 questions)
+
+Use AskUserQuestion to nail:
+
+- What problem are you solving?
 - Who will use this?
-- New thing or improving something existing?
+- New build vs improving something existing?
 
-Determine **project type** from answers (guides which categories matter most): Backend/API · Web · CLI · Mobile · Full-stack · Script/automation · Library/SDK.
+Infer **project type** (guides which categories matter most): Backend/API · Web · CLI · Mobile · Full-stack · Script/automation · Library/SDK.
 
-### Phase 2: Category Deep Dive
+### Phase 2: Category deep dive
 
-Work through relevant categories from [CATEGORIES.md](./CATEGORIES.md). For each:
-1. Ask 2-4 questions using AskUserQuestion
-2. Detect uncertainty — if user seems unsure, offer research
-3. Educate when needed — don't let them make uninformed decisions
-4. Track decisions internally
+Use [CATEGORIES.md](./CATEGORIES.md). For each **relevant** category:
 
-Always include an "I'm not sure" or "Research this" option in AskUserQuestion to acknowledge uncertainty.
+1. Ask **at least 2** questions (typically **2–4**) via AskUserQuestion.
+2. If the user is unsure, **offer research** (Phase 3 pattern).
+3. **Educate** when needed so decisions are informed.
+4. Track decisions internally.
 
-### Phase 3: Research Loops
+### Phase 3: Research loops
 
-When you detect uncertainty or knowledge gaps, offer to research:
+On uncertainty or knowledge gaps, use AskUserQuestion first:
 
 ```
 AskUserQuestion(
-  question: "[X] has several viable approaches with different tradeoffs. Research?",
+  question: "[Topic] has several viable approaches with different tradeoffs. Research?",
   options: [
     {label: "Yes, research", description: "Compare options and tradeoffs"},
     {label: "No", description: "I know what I want"},
@@ -45,13 +55,13 @@ AskUserQuestion(
 )
 ```
 
-If yes: WebSearch/WebFetch or an agent, then follow up with informed questions.
+If the user chooses research: WebSearch/WebFetch (or an agent), then **continue with informed questions**. Do not skip follow-up questions after research.
 
-### Phase 4: Conflict Resolution
+### Phase 4: Conflict resolution
 
-Surface conflicting requirements with AskUserQuestion: favor one constraint, the other, or explore alternatives first.
+When requirements conflict, surface the tension with AskUserQuestion. Options must include: favor constraint A, favor B, or explore alternatives (often with research).
 
-Example (latency vs. cost):
+**Example pattern** (latency vs cost — adapt the domain):
 
 ```
 AskUserQuestion(
@@ -64,41 +74,41 @@ AskUserQuestion(
 )
 ```
 
-Typical tensions: simple vs. rich features; real-time vs. cheap infra; secure vs. frictionless UX; flexible vs. fast; ship fast vs. future-proof.
+Typical tensions: simple vs rich; real-time vs cheap infra; secure vs frictionless UX; flexible vs fast; ship fast vs future-proof.
 
-### Phase 5: Completeness Check
+### Phase 5: Completeness check
 
-Before writing the spec, verify you have:
+Do **not** write the spec until all of the following are satisfied:
 
-**Problem Definition:** Clear problem statement, success metrics, stakeholders identified.
+| Area | Must have |
+|------|------------|
+| **Problem** | Clear problem statement, success metrics, stakeholders |
+| **UX** | User journey, core actions, error/edge handling |
+| **Technical** | Data model, integrations, scale, security, deployment |
+| **Decisions** | Tradeoffs explicitly chosen; no silent TBDs; user confirms understanding |
 
-**User Experience:** User journey mapped, core actions defined, error states handled, edge cases considered.
+If something is missing: name the gap, run targeted Phase 2 questions, then **re-run this table**.
 
-**Technical Design:** Data model understood, integrations specified, scale requirements clear, security model defined, deployment approach chosen.
+### Phase 6: Spec generation
 
-**Decisions:** All tradeoffs explicitly chosen, no TBD items, user confirmed understanding.
+1. Summarize understanding; get confirmation.
+2. Generate `docs/specs/YYYY-MM-DD-<name>.md` from [SPEC_TEMPLATE.md](./SPEC_TEMPLATE.md).
 
-If anything is missing, ask more; do not write the spec yet.
+### Phase 7: Implementation handoff
 
-**Loop-back:** e.g. problem and happy path are clear but scale is vague or security is unstated → name the gap, run targeted Phase 2 questions, then **re-run this checklist**.
+AskUserQuestion for next steps:
 
-### Phase 6: Spec Generation
+- **Start implementation** → User can say they want the spec implemented.
+- **Plan implementation** → Plan agent or `/create_plan` if available.
+- **Review spec / done** → Confirm path and that the spec reflects what was agreed.
 
-1. **Summarize understanding** and ask user to confirm before writing.
-2. **Generate the spec** to `docs/specs/YYYY-MM-DD-<name>.md` using the template in [SPEC_TEMPLATE.md](SPEC_TEMPLATE.md).
+## Integrated flow (one pass)
 
-### Phase 7: Implementation Handoff
+Orientation → deep dive categories for the project type → if unsure on stack/approach, research loop → if two goals conflict, conflict resolution → completeness table green → confirm summary → write spec file → handoff question.
 
-Ask about next steps via AskUserQuestion:
-- **Start implementation now** → Tell user to say "implement the <name> spec"
-- **Plan implementation** → Spawn plan agent or invoke /create_plan
-- **Review spec first / Done for now** → Confirm spec location and contents
+## Anti-patterns
 
-## Iteration Rules
-
-1. Never write the spec after just 3-5 questions — that produces incomplete specs
-2. Minimum 10-15 questions across categories for any real project
-3. At least 2 questions per relevant category
-4. At least 1 research loop for any non-trivial project
-5. Always do the completeness check before writing
-6. Always summarize understanding before finalizing
+- Writing the spec after a handful of questions.
+- Skipping research when the user is guessing about tools or scale.
+- Leaving contradictions unresolved.
+- Writing the spec before the completeness check passes.
