@@ -1,0 +1,22 @@
+name: Publish
+on:
+  push:
+    branches: [main]
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        tile:
+          - skills/discovery-interview
+    defaults:
+      run:
+        working-directory: ${{ matrix.tile }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: tesslio/setup-tessl@v2
+        with:
+          token: ${{ secrets.TESSL_TOKEN }}
+      - run: tessl tile lint
+      - run: tessl tile publish
