@@ -1,3 +1,6 @@
 .agents/
+.tessl/
 skills-lock.json
 **/**/evals/
+docs/
+TODO.md

@@ -10,6 +10,7 @@ jobs:
       matrix:
         tile:
           - skills/discovery-interview
+          - skills/skill-maker
     defaults:
       run:
         working-directory: ${{ matrix.tile }}
