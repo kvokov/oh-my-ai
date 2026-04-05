@@ -4,14 +4,55 @@ on:
     branches: [main]
 
 jobs:
-  publish:
+  prepare:
+    runs-on: ubuntu-latest
+    outputs:
+      all_tiles_json: ${{ steps.tiles.outputs.all_tiles_json }}
+      all_tiles_count: ${{ steps.tiles.outputs.all_tiles_count }}
+      changed_tiles_json: ${{ steps.tiles.outputs.changed_tiles_json }}
+      should_publish: ${{ steps.tiles.outputs.should_publish }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - id: tiles
+        env:
+          BEFORE: ${{ github.event.before }}
+          AFTER: ${{ github.event.after }}
+        run: |
+          set -euo pipefail
+          if [ -d skills ]; then
+            ALL_JSON=$(find skills -maxdepth 2 -name tile.json | sed 's|/tile.json$||' | sort -u | jq -R -s -c 'split("\n") | map(select(length>0))')
+          else
+            ALL_JSON='[]'
+          fi
+          echo "all_tiles_json=$ALL_JSON" >> "$GITHUB_OUTPUT"
+          echo "all_tiles_count=$(echo "$ALL_JSON" | jq 'length')" >> "$GITHUB_OUTPUT"
+
+          if [ "$BEFORE" = "0000000000000000000000000000000000000000" ]; then
+            CHANGED=$(git diff --name-only HEAD~1 HEAD)
+          else
+            CHANGED=$(git diff --name-only "$BEFORE" "$AFTER")
+          fi
+
+          CHANGED_JSON=$(echo "$CHANGED" | awk -F/ '$1=="skills" && NF>=2 {print $1"/"$2}' | sort -u | jq -R -s -c 'split("\n") | map(select(length>0))')
+          echo "changed_tiles_json=$CHANGED_JSON" >> "$GITHUB_OUTPUT"
+
+          COUNT=$(echo "$CHANGED_JSON" | jq 'length')
+          if [ "$COUNT" -gt 0 ]; then
+            echo "should_publish=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "should_publish=false" >> "$GITHUB_OUTPUT"
+          fi
+
+  lint:
+    needs: [prepare]
+    if: needs.prepare.outputs.all_tiles_count != '0'
     runs-on: ubuntu-latest
     strategy:
+      fail-fast: false
       matrix:
-        tile:
-          - skills/agent-init
-          - skills/discovery-interview
-          - skills/skill-maker
+        tile: ${{ fromJson(needs.prepare.outputs.all_tiles_json) }}
     defaults:
       run:
         working-directory: ${{ matrix.tile }}
@@ -21,4 +62,21 @@ jobs:
         with:
           token: ${{ secrets.TESSL_TOKEN }}
       - run: tessl tile lint
+
+  publish:
+    needs: [prepare]
+    if: needs.prepare.outputs.should_publish == 'true'
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        tile: ${{ fromJson(needs.prepare.outputs.changed_tiles_json) }}
+    defaults:
+      run:
+        working-directory: ${{ matrix.tile }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: tesslio/setup-tessl@v2
+        with:
+          token: ${{ secrets.TESSL_TOKEN }}
       - run: tessl tile publish
