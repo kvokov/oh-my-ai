@@ -9,6 +9,7 @@ jobs:
     strategy:
       matrix:
         tile:
+          - skills/agent-init
           - skills/discovery-interview
           - skills/skill-maker
     defaults:
