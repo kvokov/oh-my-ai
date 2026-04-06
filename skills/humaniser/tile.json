@@ -1,0 +1,11 @@
+{
+  "name": "oh-my-ai/humaniser",
+  "version": "1.0.0",
+  "private": false,
+  "summary": "Removes common AI-writing tells and rewrites prose to sound natural and human, using an interactive intake, voice calibration, and a second-pass audit.",
+  "skills": {
+    "humaniser": {
+      "path": "SKILL.md"
+    }
+  }
+}
