@@ -1,6 +1,6 @@
 {
   "name": "oh-my-ai/discovery-interview",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "private": false,
   "summary": "Interactive discovery interview → structured product spec. Triggers: spec, PRD, requirements, scoping, brainstorming, new project. Uses AskUserQuestion; WebSearch/WebFetch when user wants research. Outputs user stories, acceptance criteria, constraints.",
   "skills": {

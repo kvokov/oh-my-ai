@@ -5,7 +5,7 @@ Non-discoverable constraints: things that are easy to miss if you only read `REA
 ## Published skills (`skills/`)
 
 - **`skills/<name>/`** is the canonical source of truth for all skills. The `README.md` table must stay in sync with what exists under `skills/`.
-- Each skill directory must contain a `SKILL.md`. A `tile.json` is optional (used for Tessl tile publishing via CI).
+- Each skill directory must contain a `SKILL.md` with YAML frontmatter including **`metadata.version`** (semver string). If the skill has a **`tile.json`**, `metadata.version` must match the tile’s top-level **`version`** field — they are one release line; update both together when publishing a version bump.
 - CI on `main` discovers tiles via `tile.json`, runs `tessl tile lint` on all of them, and runs `tessl tile publish` only for tiles whose files changed in that push.
 
 ## Local maintainer tooling (optional)
@@ -25,4 +25,4 @@ These paths exist only for local development and are not part of the shared repo
 
 ## Editing skills
 
-Match existing skills’ structure and frontmatter. If a skill references tools (e.g. `AskUserQuestion`), keep names aligned with how agents in this workspace actually run.
+Match existing skills’ structure and frontmatter. If a skill references tools (e.g. `AskUserQuestion`), keep names aligned with how agents in this workspace actually run. When changing a published tile’s version, bump **`tile.json`** `version` and **`SKILL.md`** `metadata.version` to the same value.

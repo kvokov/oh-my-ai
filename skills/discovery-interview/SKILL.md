@@ -2,6 +2,7 @@
 name: discovery-interview
 description: "Conduct an interactive discovery interview to produce a structured product specification. Triggers: write a spec, PRD, feature spec, requirements, product requirements, scope a project, brainstorm a feature, flesh out an idea, plan a new project. Uses AskUserQuestion for all user choices; WebSearch/WebFetch when the user wants research. Outputs: user stories, acceptance criteria, technical constraints, prioritized requirements in docs/specs/ per SPEC_TEMPLATE.md. Do NOT use for: implementation, code review, debugging, refactors, or when the user already has a complete spec they only want edited."
 metadata:
+  version: "1.0.5"
   tags: discovery, product-spec, PRD, requirements, AskUserQuestion, interviews, specs
 ---
 

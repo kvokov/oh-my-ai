@@ -1,6 +1,6 @@
 {
   "name": "oh-my-ai/agent-init",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": false,
   "summary": "Creates, updates, or prunes an AGENTS.md for any repository by auditing the codebase, detecting non-discoverable gaps, and drafting minimal high-signal instructions that agents cannot infer from reading the code.",
   "skills": {

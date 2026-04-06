@@ -35,11 +35,13 @@ skills/<skill-name>/
 name: <skill-name>
 description: "<Purpose>. Triggers: <trigger terms>. Uses <tools>. Outputs: <deliverables>. Do NOT use for: <exclusions>."
 metadata:
+  version: "1.0.0"
   tags: <domain tags>
 ---
 ```
 
 - **Description:** Single string; front-load concrete trigger terms (nouns, failure cues, output-shape cues). Follow activation-design: purpose → Triggers → Uses → Outputs → Do NOT use for.
+- **`metadata.version`:** Required on every SKILL.md — semver string (`MAJOR.MINOR.PATCH`). New skills start at `1.0.0`; bump when behavior or user-facing guidance changes materially (patch for small clarifications, minor for new sections or workflow changes, major for breaking rewrites).
 
 ### Body
 
@@ -101,7 +103,7 @@ cd skills/<skill-name> && tessl tile lint
 
 **If `tessl` is unavailable — simulated checks:**
 
-- SKILL.md: valid YAML frontmatter; `name` and `description` present.
+- SKILL.md: valid YAML frontmatter; `name`, `description`, and `metadata.version` present.
 - tile.json: `name`, `version`, `summary`, `skills` present; `name` equals `oh-my-ai/<skill-name>`.
 - All relative links from SKILL.md resolve.
 - Every `rules/*.md` has YAML frontmatter with `name` and `description`.

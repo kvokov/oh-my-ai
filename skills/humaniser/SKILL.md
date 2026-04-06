@@ -2,6 +2,7 @@
 name: humaniser
 description: "Remove AI-writing tells and rewrite prose to sound natural and human. Triggers: humanise, humanize, de-AI, deAI, sound natural, less robotic, remove AI tells, AI writing, chatbot tone, Wikipedia AI writing signs, voice match, voice calibration. Uses AskUserQuestion for intake; Read/Write for files; WebSearch/WebFetch when the user wants terminology or usage research; Bash when applying edits in a repo. Outputs: interactive Q&A then rewritten text (and optional brief edit log). Do NOT use for: inventing facts, changing the author's stance, weakening safety or compliance language without explicit instruction, or skipping intake when the user's goals and preservation rules are unclear."
 metadata:
+  version: "1.0.1"
   tags: writing, editing, de-ai, voice, prose, humanise, natural language
 ---
 

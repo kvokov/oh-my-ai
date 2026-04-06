@@ -2,6 +2,7 @@
 name: agent-init
 description: "Creates, updates, or prunes an AGENTS.md for any repository by auditing the codebase, detecting non-discoverable gaps, and drafting minimal high-signal instructions. Triggers: AGENTS.md, agent setup, agent config, init agents, workspace setup, agent instructions, Claude setup. Uses: Read, Bash, Glob, Grep, AskUserQuestion. Outputs: AGENTS.md at repo root (or module-level for monorepos). Do NOT use for: writing README, generating docs, configuring CI, or editing code."
 metadata:
+  version: "1.0.1"
   tags: initialization, agents, context-engineering, agents-md, workspace-setup
 ---
 

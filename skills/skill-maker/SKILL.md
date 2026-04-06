@@ -2,6 +2,7 @@
 name: skill-maker
 description: "Use this skill any time someone wants to create, scaffold, build, fix, improve, benchmark, or optimize a Tessl/Claude skill — even if they don't say 'tessl' explicitly. If the request involves making a new skill ('create a skill for X', 'build me a skill that does Y', 'scaffold a skill called Z'), fixing or completing an existing one (missing tile.json, broken repo integration, low eval scores, description not triggering), or running and iterating on evals, invoke this skill. The full workflow covers: structured interview → SKILL.md + tile.json + evals/ + rules/ scaffolding → README/CI repo integration → tessl lint → LLM-as-judge eval loop → benchmark logging. Do NOT use for: editing application code, debugging, refactoring, writing general documentation, or creating presentations."
 metadata:
+  version: "1.0.1"
   tags: skill, create, scaffold, interview, eval, optimize, benchmark, tile, tessl
 ---
 
@@ -26,6 +27,7 @@ Detect which mode from the user's request. If ambiguous, ask.
 6. **Eval execution is read-only.** Never modify skill files during evaluation. Only modify during the apply step after user approval.
 7. **Benchmark logging is append-only.** Never overwrite or delete previous entries in benchmark-log.md.
 8. **Present optimization proposals as specific edits** with before/after text, not vague suggestions.
+9. **Every SKILL.md includes `metadata.version`.** Use a semver string (e.g. `1.0.0` for new skills; bump minor or patch when behavior or documentation meaningfully changes).
 
 ---
 
@@ -64,6 +66,7 @@ Turn the decision map into a complete skill directory. See [scaffold-rules](./ru
 name: <skill-name>
 description: "<Purpose>. Triggers: <trigger terms>. Uses <tools>. Outputs: <deliverables>. Do NOT use for: <exclusions>."
 metadata:
+  version: "1.0.0"
   tags: <domain tags>
 ---
 ```
@@ -101,7 +104,7 @@ Both integrations are mandatory. Check for existing entries before inserting.
 
 **With tessl CLI:** `cd skills/<skill-name> && tessl tile lint`
 
-**Simulated (no CLI):** Verify: SKILL.md has valid YAML frontmatter with `name` and `description`; tile.json has `name`, `version`, `summary`, `skills`; tile.json `name` matches `oh-my-ai/<skill-name>`; no broken relative links; each `rules/*.md` has YAML frontmatter with `name` and `description`.
+**Simulated (no CLI):** Verify: SKILL.md has valid YAML frontmatter with `name`, `description`, and `metadata.version` (semver string); tile.json has `name`, `version`, `summary`, `skills`; tile.json `name` matches `oh-my-ai/<skill-name>`; no broken relative links; each `rules/*.md` has YAML frontmatter with `name` and `description`.
 
 Report results. Fix failures and re-lint.
 

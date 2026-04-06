@@ -1,6 +1,6 @@
 {
   "name": "oh-my-ai/llm-wiki",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "private": false,
   "summary": "Maintains a persistent, interlinked markdown wiki between immutable raw sources and answers: ingest, query, lint, index and log—compounding knowledge instead of one-shot RAG.",
   "skills": {

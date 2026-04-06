@@ -2,6 +2,7 @@
 name: llm-wiki
 description: "Maintains a persistent LLM-written markdown wiki between immutable raw sources and answers so knowledge compounds instead of being re-derived each query. Triggers: llm wiki, persistent wiki, personal knowledge base, wiki maintenance, ingest sources, compound knowledge, index.md, log.md, Obsidian wiki, cross-references, Karpathy wiki pattern. Uses: Read, Glob, Grep, file edits, optional WebSearch, AskUserQuestion when schema or goals are ambiguous. Outputs: updated wiki pages, index, append-only log, citations on query. Do NOT use for: mutating raw sources, one-off chat answers with no wiki artifact, or replacing a user-defined wiki schema without reading it first."
 metadata:
+  version: "1.0.1"
   tags: knowledge-base, wiki, markdown, obsidian, ingest, rag-alternative, personal-kb, research-notes
 ---
 
