@@ -50,6 +50,23 @@ A line earns inclusion when it is **all three**:
 | "Tests are in the `__tests__` directory" | Inferable from structure | Directory listing, test config |
 | "We use React for the frontend" | Stack summary | `package.json`, imports |
 
+## Critical distinction: existence vs. intent
+
+A file or directory's **existence** is always discoverable — agents can list files. But the **intent, status, and constraints** attached to it are often NOT discoverable:
+
+| What | Discoverable? | Example |
+|------|--------------|---------|
+| Directory `src/legacy-auth/` exists | Yes — directory listing | — |
+| `src/legacy-auth/` is deprecated and must not be modified | **No** — no deprecation marker in code, still passes all checks | Include in AGENTS.md |
+| CI config file `.github/workflows/test.yml` exists | Yes | — |
+| CI runs `pytest --cov` but local `pytest` command doesn't include `--cov` | **No** — the flag difference is only visible by comparing CI config to local scripts | Include in AGENTS.md |
+| `config/production.yml` exists | Yes | — |
+| `config/production.yml` must only be edited by SRE team | **No** — nothing in the file says this | Include in AGENTS.md |
+| TypeORM `synchronize` option exists in data-source config | Yes — readable from config | — |
+| `synchronize: true` must NEVER be enabled in production and is a critical landmine | **No** — the config may show it as `false` but nothing explains the danger | Include in AGENTS.md |
+
+**Rule**: When you see a deprecated directory, a dangerous config option, or a CI-vs-local command difference, the *constraint* or *warning* about it is almost always non-discoverable. Do not confuse the file's visibility with the constraint's visibility.
+
 ## Edge cases
 
 **"But it's important!"** — Importance alone does not justify inclusion. If the information is in `README.md` or inferable from config, it is discoverable regardless of how critical it is. Agents read those files.
@@ -60,6 +77,8 @@ A line earns inclusion when it is **all three**:
 
 **Multi-step implicit knowledge**: If correct execution requires knowing steps A → B → C in order, and no script encodes that order, the sequence is non-discoverable even if each individual step appears somewhere in the repo.
 
+**CI-vs-local differences**: When CI pipelines run commands with different flags than local scripts (e.g., `--cov`, `--bail`, `--no-cache`), the *difference* is non-discoverable unless an agent compares CI config against local scripts — which is a non-obvious cross-file inference. Document these differences.
+
 ## Applying the filter during drafting
 
 When generating `AGENTS.md` content:
@@ -69,6 +88,7 @@ When generating `AGENTS.md` content:
 3. If you can name the file and the relevant section → the line fails the filter → delete it
 4. If you cannot → the line passes → keep it
 5. After filtering, verify the remaining lines are actionable (specific command, specific file, specific behavior)
+6. **For every item excluded**, record it in audit-notes.md or changes-summary.md with the repo file that makes it discoverable. Silent omission is not acceptable — the reasoning trail is required for auditability.
 
 ## Maintenance implication
 
