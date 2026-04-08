@@ -1,0 +1,11 @@
+{
+  "name": "oh-my-ai/uiux",
+  "version": "0.1.0",
+  "private": false,
+  "summary": "Self-contained UI/UX design intelligence: priority ladder, design reference (style, color, type, landing, charts, perf), polish checks, file-first design-system artifacts; deep defaults on React, Next.js, Tailwind, RN, Flutter.",
+  "skills": {
+    "uiux": {
+      "path": "SKILL.md"
+    }
+  }
+}

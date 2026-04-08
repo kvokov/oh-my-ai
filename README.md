@@ -15,6 +15,7 @@ Skills follow a simple convention: a directory with a `SKILL.md` file (the promp
 | [llm-wiki](skills/llm-wiki/)                       | Maintains a persistent markdown wiki between raw sources and answers — ingest, query, lint, index, and log — so knowledge compounds instead of being re-derived every query. |
 | [reading-synthesis](skills/reading-synthesis/)     | Thirteen-part rigorous synthesis of articles, essays, chapters, or talks: deep summary, insights, structure, comparables, critique, framework, ten actions, ~300-word exec brief, and CEO-level stakes. |
 | [skill-maker](skills/skill-maker/)                 | Interactive skill creation and eval-driven optimization: interview, scaffold, evaluate, refine. Produces complete skill directories ready for use.                           |
+| [uiux](skills/uiux/)                               | UI/UX design intelligence: priority ladder, design reference, polish checks, file-first `design-system/` artifacts. |
 
 
 ## Installation
