@@ -1,6 +1,6 @@
 {
   "name": "oh-my-ai/skill-maker",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "private": false,
   "summary": "Interactive skill creation and eval-driven optimization. Triggers: create a skill, make a skill, new skill, scaffold skill, optimize skill, run evals, improve skill. Uses AskUserQuestion for interview; WebSearch for research; Bash for eval execution. Outputs: complete skill directory with SKILL.md, tile.json, evals, and repo integration.",
   "skills": {

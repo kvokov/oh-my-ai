@@ -23,6 +23,8 @@ Every skill should have:
 - One scenario that stresses omission-prone outputs (footers, checklists, required sections)
 - One scenario with noisy context to test retrieval under pressure
 
+**CLI-generated scenarios:** When scenarios come from `tessl scenario generate` / `tessl scenario download`, treat them as a starting set. Re-read the checklist above after download; if anything is missing (e.g. noisy context or omission stress), add or extend scenarios by hand under `evals/<slug>/` so the matrix still matches this section before you rely on eval results for optimization.
+
 ## Criteria weighting
 
 Scores in criteria.json must sum to 100. Target distribution:

@@ -7,15 +7,59 @@ description: How to run skill evaluations via Tessl CLI or LLM-as-judge and norm
 
 Eval scenarios live under `skills/<skill-name>/evals/<scenario-slug>/` as `task.md` + `criteria.json`. Scenario shape and weighting follow [benchmark-loop](./benchmark-loop.md).
 
-**Constraint:** Evaluation is **read-only** for skill sources. Do not edit SKILL.md, tile.json, or rules during eval execution. Changes happen only in the optimizer apply step after user approval.
+**Constraint:** Evaluation is **read-only** for skill sources. Do not edit SKILL.md, tile.json, or rules during eval execution. Changes happen only in the optimizer apply step after user approval, or in separate steps such as `tessl skill review` (never interleaved with `tessl eval run`).
 
-## Path A — Tessl CLI (preferred)
+## Full Tessl CLI pipeline (repo root)
 
-1. Detect CLI: `which tessl` (or equivalent).
-2. Run from repo context:
+Run these from the **repository root** so paths like `./skills/<skill-name>` resolve consistently. If any step fails, capture stderr, report to the user, and fall back to manual scenarios (Phase 3 Path M) and/or Path B below as appropriate.
+
+1. **Skill review (mutates skill — run before eval, not during):**
 
    ```bash
-   tessl eval run skills/<skill-name> --json
+   tessl skill review --optimize --yes ./skills/<skill-name>
+   ```
+
+2. **Tile lint** (when `tile.json` exists):
+
+   ```bash
+   cd skills/<skill-name> && tessl tile lint
+   ```
+
+3. **Scenario generation** — parse the **generation id** from stdout; do not guess.
+
+   ```bash
+   tessl scenario generate ./skills/<skill-name>
+   ```
+
+4. **Download scenarios:**
+
+   ```bash
+   tessl scenario download <generation>
+   ```
+
+5. **Place evals** under the skill. Often the CLI writes `./evals/` at cwd:
+
+   ```bash
+   mv ./evals/ ./skills/<skill-name>/
+   ```
+
+   If files land elsewhere, move that directory into `skills/<skill-name>/evals/`. If `evals/` already exists, use AskUserQuestion: replace, merge, or use a temp path — never silent overwrite.
+
+6. **Eval run** — prefer `--json` when the agent must parse scores for Phase 5–6:
+
+   ```bash
+   tessl eval run ./skills/<skill-name> --json
+   ```
+
+   Optional: pin the judge/agent, e.g. `tessl eval run ./skills/<skill-name> --json --agent=claude:claude-opus-4-6`, when your workflow requires a fixed model. Add only flags you need; `--json` stays the default for machine-readable output.
+
+## Path A — Tessl CLI eval only (when scenarios already exist)
+
+1. Detect CLI: `which tessl` (or equivalent).
+2. From repo root:
+
+   ```bash
+   tessl eval run ./skills/<skill-name> --json
    ```
 
 3. Parse JSON into a normalized result (see **Unified schema** below). Surface per-scenario totals and per-criterion scores if present in the CLI output.

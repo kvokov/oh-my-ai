@@ -1,8 +1,8 @@
 ---
 name: skill-maker
-description: "Use this skill any time someone wants to create, scaffold, build, fix, improve, benchmark, or optimize a Tessl/Claude skill — even if they don't say 'tessl' explicitly. If the request involves making a new skill ('create a skill for X', 'build me a skill that does Y', 'scaffold a skill called Z'), fixing or completing an existing one (missing tile.json, broken repo integration, low eval scores, description not triggering), or running and iterating on evals, invoke this skill. The full workflow covers: structured interview → SKILL.md + tile.json + evals/ + rules/ scaffolding → README/CI repo integration → tessl lint → LLM-as-judge eval loop → benchmark logging. Do NOT use for: editing application code, debugging, refactoring, writing general documentation, or creating presentations."
+description: "Use this skill any time someone wants to create, scaffold, build, fix, improve, benchmark, or optimize a Tessl/Claude skill — even if they don't say 'tessl' explicitly. If the request involves making a new skill ('create a skill for X', 'build me a skill that does Y', 'scaffold a skill called Z'), fixing or completing an existing one (missing tile.json, broken repo integration, low eval scores, description not triggering), or running and iterating on evals, invoke this skill. The full workflow covers: structured interview → SKILL.md + tile.json + rules/ scaffolding → README/CI repo integration → tessl tile lint → optional Tessl CLI pipeline (skill review, scenario generate/download, eval run) → hand-authored evals or LLM-as-judge fallback → benchmark logging. Do NOT use for: editing application code, debugging, refactoring, writing general documentation, or creating presentations."
 metadata:
-  version: "1.0.1"
+  version: "1.0.2"
   tags: skill, create, scaffold, interview, eval, optimize, benchmark, tile, tessl
 ---
 
@@ -12,8 +12,8 @@ Create production-quality Tessl skills from scratch and optimize them through ev
 
 Two modes of operation:
 
-- **Create:** Interactive interview → scaffold a complete skill directory → repo integration → lint.
-- **Optimize:** Run evals → analyze results → propose edits → apply → re-eval → log.
+- **Create:** Interactive interview → scaffold a complete skill directory → repo integration → lint → (when Tessl CLI exists) §2.6 pipeline through scenarios and eval.
+- **Optimize:** Refresh scenarios (§2.6 Path T or Phase 3 Path M) → run evals → analyze results → propose edits → apply → re-eval → log.
 
 Detect which mode from the user's request. If ambiguous, ask.
 
@@ -24,9 +24,9 @@ Detect which mode from the user's request. If ambiguous, ask.
 3. **Run all interview questions before scaffolding.** Do not generate SKILL.md mid-interview.
 4. **Scaffold must lint-pass.** After generating files, run `tessl tile lint` if available; otherwise run simulated lint checks (Phase 2.5).
 5. **Repo integration is mandatory.** Every new skill gets a README row and a CI matrix entry. Check for existing entries before inserting (idempotency). **Do not add or edit `skills-lock.json`** — it pins vendored skills under `.agents/skills/`; first-party tiles live under `skills/` and are wired via README + CI only.
-6. **Eval execution is read-only.** Never modify skill files during evaluation. Only modify during the apply step after user approval.
+6. **Eval execution is read-only.** Never modify skill files during `tessl eval run` or LLM-as-judge runs. All skill mutations (e.g. `tessl skill review`, Phase 5 apply) must occur **before** eval execution starts, at explicit workflow boundaries — never interleaved with a running eval.
 7. **Benchmark logging is append-only.** Never overwrite or delete previous entries in benchmark-log.md.
-8. **Present optimization proposals as specific edits** with before/after text, not vague suggestions.
+8. **Present optimization proposals as specific edits** with before/after text, not vague suggestions. **`tessl skill review --optimize --yes` is an exception:** Tessl applies changes immediately without per-edit approval — treat it as a distinct "Tessl apply" step and tell the user when you run it.
 9. **Every SKILL.md includes `metadata.version`.** Use a semver string (e.g. `1.0.0` for new skills; bump minor or patch when behavior or documentation meaningfully changes).
 
 ---
@@ -41,12 +41,12 @@ Run all 10 questions using AskUserQuestion before generating any files. Collect 
 |---|----------|-------------|-----------|
 | 1 | What does this skill do? (one sentence) | Free text | Ask "What task should the AI do better?" and "What goes wrong without it?" |
 | 2 | Who will use this skill? | Developers / Semi-technical / Both | Default to Both |
-| 3 | What type of project? | Code generation / Writing / Tool use / Interview / Other | Ask for brief description of domain |
+| 3 | What type of project? | Code generation / Writing / Tool use / Interview / Other | Ask for a brief domain description |
 | 4 | What are the 3–5 things this skill MUST do every time? | Free text (list) | Ask "What would make you say 'it worked perfectly'?" |
 | 5 | What should this skill NEVER do? | Free text (list) | Generate domain-specific anti-patterns from purpose + domain answers |
 | 6 | What phrases or signals activate this skill? | Free text / Generate suggestions / Research similar | Produce ≥5 candidate trigger terms from purpose + domain + behaviors; present for approval |
 | 7 | What does the final output look like? | Files / Structured message / Interactive flow | Research similar skills |
-| 8 | Does this skill need companion files beyond SKILL.md? | No / Rules files / Templates | If >5 core behaviors or estimated length >300 lines, recommend companion files |
+| 8 | Does this skill need companion files beyond SKILL.md? | No / Rules files / Templates | Recommend companion files if >5 core behaviors or estimated length >300 lines |
 | 9 | Which tools does this skill need? | AskUserQuestion only / + file tools / + WebSearch / All + Bash | Infer from domain: Code-gen → file tools + Bash; Writing → file tools; Workflow → all; Interview → AskUserQuestion + optionally WebSearch |
 | 10 | Describe 2–3 realistic test tasks for this skill | Free text / Generate / Skip | Generate from purpose + behaviors |
 
@@ -108,6 +108,25 @@ Both integrations are mandatory. Check for existing entries before inserting.
 
 Report results. Fix failures and re-lint.
 
+#### 2.6 Tessl CLI pipeline (preferred when CLI exists)
+
+Run from **repository root** with paths like `./skills/<skill-name>`. Use `which tessl` (or equivalent) first; if missing, skip this subsection and use Phase 3 Path M + Phase 4 Path B as needed.
+
+**Boundary:** `tessl skill review` **writes** the skill and must complete before `tessl eval run` starts (→ non-negotiable #6).
+
+| Step | Command / action |
+|------|------------------|
+| 1 | `tessl skill review --optimize --yes ./skills/<skill-name>` — may rewrite `SKILL.md` (and other files per Tessl). This is **Tessl auto-apply** (non-negotiable #8). |
+| 2 | If the skill has `tile.json`: `cd skills/<skill-name> && tessl tile lint` — same as Phase 2.5. |
+| 3 | `tessl scenario generate ./skills/<skill-name>` — **parse the generation id from stdout**; do not guess. |
+| 4 | `tessl scenario download <generation>` — use the id from step 3. |
+| 5 | **Place** downloaded scenarios under the skill: if Tessl wrote `./evals/` at repo root, move it with `mv ./evals/ ./skills/<skill-name>/` (or merge — see below). If output landed elsewhere, move **that** directory into `skills/<skill-name>/evals/`. |
+| 6 | Continue to Phase 4 — Path A in [eval-runner](./rules/eval-runner.md). |
+
+**If `skills/<skill-name>/evals/` already exists:** Use AskUserQuestion before moving: replace entirely, merge (explain how), or download to a temp directory — never overwrite silently.
+
+Local Tessl cache under `.tessl/` stays out of git (typically gitignored).
+
 ---
 
 ## Mode: Optimize
@@ -116,7 +135,11 @@ Report results. Fix failures and re-lint.
 
 If the skill has no `evals/` directory, or the user asks for eval scenarios, offer to create them via AskUserQuestion.
 
-Generate **2–3 scenarios** following [benchmark-loop](./rules/benchmark-loop.md) coverage rules (full scenario schema, scoring rules, and selection heuristics are defined there). For each scenario, create `evals/<scenario-slug>/`:
+**Path T — Tessl CLI (preferred):** Run steps 3–5 from §2.6: `tessl scenario generate` → parse generation id → `tessl scenario download` → place under `skills/<skill-name>/evals/`. To tune the skill before generating scenarios, run steps 1–2 from §2.6 first. After download, verify coverage against [benchmark-loop](./rules/benchmark-loop.md); add or adjust scenarios by hand if gaps remain.
+
+**Path M — Manual (fallback):** Use when Tessl is missing, the user declines CLI generation, or download fails. Author scenarios directly.
+
+Generate **2–3 scenarios** (or validate CLI output) following [benchmark-loop](./rules/benchmark-loop.md) coverage rules (full scenario schema, scoring rules, and selection heuristics are defined there). For each scenario, ensure `evals/<scenario-slug>/` contains:
 
 **task.md** — A realistic problem (100–300 words) reflecting actual user prompts. Not a toy example.
 
@@ -137,9 +160,9 @@ Key constraints: all `max_score` values must sum to exactly 100; each criterion 
 
 ### Phase 4 — Eval Runner
 
-See [eval-runner](./rules/eval-runner.md) for full implementation. Summary:
+See [eval-runner](./rules/eval-runner.md) for full implementation (including the **full Tessl CLI pipeline** and `--json` vs `--agent`). Summary:
 
-**Path A — Tessl CLI (preferred):** `tessl eval run skills/<skill-name> --json`. Parse JSON output into per-scenario, per-criterion scores.
+**Path A — Tessl CLI (preferred):** From repo root, `tessl eval run ./skills/<skill-name> --json` (add `--agent=...` when you need a fixed judge model; see eval-runner). Parse JSON output into per-scenario, per-criterion scores.
 
 **Path B — LLM-as-Judge Fallback:** For each scenario, run two subagents (Agent tool) — one with task only (baseline), one with SKILL.md prepended (with-skill). Score each criterion by launching a judge subagent with the criterion description and agent output; request a JSON response `{"score": N, "reasoning": "..."}`.
 
@@ -174,6 +197,8 @@ Analyze eval results, classify failures, and propose targeted edits. See [activa
 #### 5.3 Apply and re-eval
 
 On user approval: apply edits → re-run Phase 4 → compare new vs. previous results → log to benchmark-log.md → flag any negative deltas immediately.
+
+**Optional Tessl loop:** Before Phase 4, re-run **§2.6** from step 1 (`tessl skill review` through scenario refresh) to regenerate scenarios after major skill changes. All such mutations must finish before eval execution begins (→ non-negotiable #6).
 
 ---
 
@@ -253,6 +278,7 @@ skills/commit-message/
 - Producing a skill with a description that lacks explicit trigger terms.
 - Writing eval criteria that don't sum to 100.
 - Proposing vague optimization suggestions instead of specific before/after edits.
-- Modifying skill files during eval execution or overwriting previous benchmark-log.md entries.
+- Modifying skill files during eval execution (`tessl eval run` / judge runs) or overwriting previous benchmark-log.md entries.
+- Running `tessl skill review` in the middle of Phase 4, or guessing a scenario generation id instead of parsing CLI output.
 - Skipping the lint check after scaffold generation, or inserting duplicate rows in README or the CI matrix.
 - Adding or editing `skills-lock.json` when scaffolding a first-party skill under `skills/`.
