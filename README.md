@@ -13,6 +13,7 @@ Skills follow a simple convention: a directory with a `SKILL.md` file (the promp
 | [discovery-interview](skills/discovery-interview/) | Guided discovery interview that turns vague ideas into a structured spec: targeted Q&A, optional research, user stories, acceptance criteria, and constraints.               |
 | [humaniser](skills/humaniser/)                     | Interactive de-AI rewrite: intake, voice calibration, pattern hunt, and audit pass so prose sounds human without inventing facts.                                         |
 | [llm-wiki](skills/llm-wiki/)                       | Maintains a persistent markdown wiki between raw sources and answers — ingest, query, lint, index, and log — so knowledge compounds instead of being re-derived every query. |
+| [reading-synthesis](skills/reading-synthesis/)     | Thirteen-part rigorous synthesis of articles, essays, chapters, or talks: deep summary, insights, structure, comparables, critique, framework, ten actions, ~300-word exec brief, and CEO-level stakes. |
 | [skill-maker](skills/skill-maker/)                 | Interactive skill creation and eval-driven optimization: interview, scaffold, evaluate, refine. Produces complete skill directories ready for use.                           |
 
 

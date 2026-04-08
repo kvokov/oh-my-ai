@@ -1,0 +1,11 @@
+{
+  "name": "oh-my-ai/reading-synthesis",
+  "version": "1.0.0",
+  "private": false,
+  "summary": "Produces a thirteen-part rigorous synthesis of a reading or talk—structure, insights, critique, framework rebuild, actions, and a compressed executive summary—for semi-technical audiences.",
+  "skills": {
+    "reading-synthesis": {
+      "path": "SKILL.md"
+    }
+  }
+}
