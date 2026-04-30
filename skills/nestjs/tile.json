@@ -1,0 +1,11 @@
+{
+  "name": "oh-my-ai/nestjs",
+  "version": "1.0.1",
+  "private": false,
+  "summary": "NestJS architecture, dependency injection, validation, security, errors, testing, persistence, APIs, microservices, and deployment patterns with prioritized rule tiers and companion rule files.",
+  "skills": {
+    "nestjs": {
+      "path": "SKILL.md"
+    }
+  }
+}
